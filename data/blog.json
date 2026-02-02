@@ -1,0 +1,18 @@
+[
+    {
+        "slug": "future-of-ghanaian-art",
+        "title": "The Future of Ghanaian Art in the Digital Age",
+        "excerpt": "Exploring how technology is reshaping traditional craftsmanship in West Africa.",
+        "content": "Ghanaian art has always been about storytelling... (full story here)",
+        "date": "2024-02-01",
+        "image": "/images/blog-1.jpg"
+    },
+    {
+        "slug": "virtual-sculptures",
+        "title": "Virtual Sculptures: Carving in the Cloud",
+        "excerpt": "A look into the process of creating 3D art for digital galleries.",
+        "content": "Merging the physical and digital realms requires a new set of tools...",
+        "date": "2024-01-15",
+        "image": "/images/blog-2.jpg"
+    }
+]

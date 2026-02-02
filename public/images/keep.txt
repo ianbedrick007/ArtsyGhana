@@ -1,0 +1,1 @@
+# Dummy file to ensure public/images directory exists
