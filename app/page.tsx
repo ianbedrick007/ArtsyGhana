@@ -1,17 +1,151 @@
 'use client'
 
 import Gallery3D from '@/components/Gallery3D'
-import { Suspense, useState } from 'react'
+import { Suspense, useState, useEffect, useRef } from 'react'
 import { products } from '@/data/products'
 import { useCart } from '@/store/useCart'
 import Image from 'next/image'
 
 export default function Home() {
     const [showExhibition, setShowExhibition] = useState(false)
+    const videoRef = useRef<HTMLVideoElement>(null)
+    const heroRef = useRef<HTMLDivElement>(null)
+    const [scrollProgress, setScrollProgress] = useState(0)
+    const [animationComplete, setAnimationComplete] = useState(false)
+    const scrollAccumulator = useRef(0)
 
     // Pick specific items to feature
     const featuredIds = ['p1', 'p2', 'p3']
     const featuredProducts = products.filter(p => featuredIds.includes(p.id))
+
+    // Scroll-controlled video scrubbing with page lock AND smooth interpolation
+    useEffect(() => {
+        const video = videoRef.current
+        if (!video) return
+
+        // Amount of scroll needed to complete animation (adjust for sensitivity)
+        const SCROLL_MULTIPLIER = 4 // Increased from 3 to 4 to require more scroll (slower playback)
+        const LERP_FACTOR = 0.05 // Lowered from 0.08 for smoother/heavier inertia to mask PC lag
+
+        // NOTE: For smoothest performance on laptops, video must be encoded with Keyframe Interval = 1 (All-Intra)
+        // ffmpeg -i input.mp4 -vcodec libx264 -x264-params keyint=1:min-keyint=1:scenecut=0 -crf 25 -preset medium output.mp4
+
+        let currentSmoothedProgress = animationComplete ? 1 : 0
+        let rafId: number
+
+        // Loop to smoothly interpolate video progress
+        const renderLoop = () => {
+            const maxScroll = window.innerHeight * SCROLL_MULTIPLIER
+            // Calculate target progress from scroll accumulator
+            const targetProgress = Math.max(0, Math.min(1, scrollAccumulator.current / maxScroll))
+
+            // Linear Interpolation (Lerp)
+            currentSmoothedProgress += (targetProgress - currentSmoothedProgress) * LERP_FACTOR
+
+            // Update video time
+            const videoDuration = video.duration
+            if (videoDuration && !isNaN(videoDuration)) {
+                // If progress is super close to target, just snap (optimization)
+                if (Math.abs(targetProgress - currentSmoothedProgress) < 0.001) {
+                    currentSmoothedProgress = targetProgress
+                }
+                video.currentTime = currentSmoothedProgress * videoDuration
+            }
+
+            setScrollProgress(currentSmoothedProgress)
+
+            // Completion check logic
+            // Use a slightly higher threshold to ensure it feels complete
+            if (!animationComplete && currentSmoothedProgress >= 0.99) {
+                setAnimationComplete(true)
+                // Snap accumulator to max when completing
+                scrollAccumulator.current = maxScroll
+            }
+
+            rafId = requestAnimationFrame(renderLoop)
+        }
+
+        // Start the loop
+        rafId = requestAnimationFrame(renderLoop)
+
+        const handleWheel = (e: WheelEvent) => {
+            const maxScroll = window.innerHeight * SCROLL_MULTIPLIER
+
+            if (!animationComplete) {
+                // SCRUBBING MODE
+                e.preventDefault()
+
+                scrollAccumulator.current += e.deltaY * 0.5 // Reduce sensitivity for smoother feeling
+                // Critical: Clamp accumulator to prevent "overscroll deadzone"
+                scrollAccumulator.current = Math.max(0, Math.min(scrollAccumulator.current, maxScroll))
+
+            } else {
+                // NORMAL MODE
+                // Only re-engage if at top and scrolling up
+                if (window.scrollY <= 5 && e.deltaY < 0) {
+                    e.preventDefault()
+                    setAnimationComplete(false)
+                    // Snap accumulator to slightly less than max to verify re-entry
+                    scrollAccumulator.current = maxScroll - 1
+                }
+                // Otherwise let native scroll happen
+            }
+        }
+
+        const handleTouchStart = (e: TouchEvent) => {
+            const touch = e.touches[0]
+                ; (video as any).touchStartY = touch.clientY
+        }
+
+        const handleTouchMove = (e: TouchEvent) => {
+            const touch = e.touches[0]
+            const touchStartY = (video as any).touchStartY || touch.clientY
+            const deltaY = touchStartY - touch.clientY
+                ; (video as any).touchStartY = touch.clientY
+
+            const maxScroll = window.innerHeight * SCROLL_MULTIPLIER
+
+            if (!animationComplete) {
+                // SCRUBBING MODE
+                e.preventDefault()
+
+                scrollAccumulator.current += deltaY * 1.5 // Multiplier for mobile sensitivity
+                scrollAccumulator.current = Math.max(0, Math.min(scrollAccumulator.current, maxScroll))
+
+            } else {
+                // NORMAL MODE
+                if (window.scrollY <= 5 && deltaY < 0) {
+                    e.preventDefault()
+                    setAnimationComplete(false)
+                    scrollAccumulator.current = maxScroll - 1
+                }
+            }
+        }
+
+        window.addEventListener('wheel', handleWheel, { passive: false })
+        window.addEventListener('touchstart', handleTouchStart, { passive: false })
+        window.addEventListener('touchmove', handleTouchMove, { passive: false })
+
+        return () => {
+            cancelAnimationFrame(rafId)
+            window.removeEventListener('wheel', handleWheel)
+            window.removeEventListener('touchstart', handleTouchStart)
+            window.removeEventListener('touchmove', handleTouchMove)
+        }
+    }, [animationComplete])
+
+    // Lock body scroll until animation completes
+    useEffect(() => {
+        if (!animationComplete) {
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = 'auto'
+        }
+
+        return () => {
+            document.body.style.overflow = 'auto'
+        }
+    }, [animationComplete])
 
     if (showExhibition) {
         return (
@@ -37,47 +171,55 @@ export default function Home() {
 
     return (
         <div className="relative">
-            {/* Hero Section */}
-            <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-luxury-cream">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-luxury-gold rounded-full blur-[120px]" />
-                    <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-luxury-gold rounded-full blur-[120px]" />
+            {/* Hero Section - Full screen with video */}
+            <section ref={heroRef} className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+                {/* Video Background */}
+                <div className="absolute inset-0 w-full h-full">
+                    <video
+                        ref={videoRef}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        src="/images/artsyghana_hero_optimized.mp4"
+                        muted
+                        playsInline
+                        preload="auto"
+                    />
+                    {/* Dark overlay for text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60" />
                 </div>
 
                 <div className="relative z-10 text-center max-w-5xl px-8">
-                    <p className="text-luxury-gold text-xs uppercase tracking-[0.4em] mb-6 font-semibold animate-fade-in">
+                    <p className="text-luxury-gold text-xs uppercase tracking-[0.4em] mb-6 font-semibold animate-fade-in drop-shadow-lg">
                         EST. 2024 • ACCRA, GHANA
                     </p>
-                    <h1 className="text-7xl md:text-9xl font-serif text-luxury-black mb-8 leading-tight tracking-tighter">
+                    <h1 className="text-7xl md:text-9xl font-serif text-white mb-8 leading-tight tracking-tighter drop-shadow-2xl">
                         Where heritage <br />
                         <span className="italic">meets</span> innovation.
                     </h1>
-                    <p className="text-luxury-gray text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
+                    <p className="text-white text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed drop-shadow-lg">
                         A curated digital sanctuary for contemporary Ghanaian art.
                         Experience the soul of West African creativity through an immersive virtual lens.
                     </p>
                     <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
                         <button
                             onClick={() => setShowExhibition(true)}
-                            className="group relative bg-luxury-black text-white px-12 py-5 text-xs uppercase tracking-[0.25em] overflow-hidden transition-all duration-500"
+                            className="group relative bg-white/10 backdrop-blur-md border border-white/20 text-white px-12 py-5 text-xs uppercase tracking-[0.25em] overflow-hidden transition-all duration-500 hover:bg-luxury-gold hover:border-luxury-gold"
                         >
                             <span className="relative z-10">Enter Exhibition</span>
-                            <div className="absolute inset-0 bg-luxury-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                         </button>
-                        <a href="/store" className="text-xs uppercase tracking-[0.25em] border-b border-luxury-black pb-1 hover:text-luxury-gold hover:border-luxury-gold transition-all duration-300">
+                        <a href="/store" className="text-xs uppercase tracking-[0.25em] border-b border-white/60 pb-1 hover:text-luxury-gold hover:border-luxury-gold transition-all duration-300 text-white drop-shadow-lg">
                             Browse Collections
                         </a>
                     </div>
                 </div>
 
-                <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center">
-                    <span className="text-[10px] uppercase tracking-widest text-luxury-gray mb-4">Discover More</span>
-                    <div className="w-[1px] h-16 bg-gradient-to-down from-luxury-gold to-transparent" />
+                <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center z-20">
+                    <span className="text-[10px] uppercase tracking-widest text-white/80 mb-4 drop-shadow-lg">Scroll to Explore</span>
+                    <div className="w-[1px] h-16 bg-gradient-to-b from-white/60 to-transparent animate-pulse" />
                 </div>
             </section>
 
             {/* Featured Artwork Section */}
-            <section id="collections" className="bg-white py-32 px-8">
+            <section id="collections" className="bg-white py-16 px-8">
                 <div className="max-w-7xl mx-auto">
                     <div className="flex justify-between items-end mb-20">
                         <div>

@@ -25,8 +25,8 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={cn(inter.variable, outfit.variable, "font-sans min-h-screen bg-luxury-cream")}>
-                <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-8 py-4 glass">
-                    <a href="/" className="relative h-28 w-72 transition-opacity hover:opacity-80">
+                <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-8 py-2 glass">
+                    <a href="/" className="relative h-16 w-48 transition-opacity hover:opacity-80">
                         <Image
                             src="/images/ARTSYblack.png"
                             alt="ArtsyGhana Logo"
