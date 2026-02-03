@@ -4,6 +4,8 @@ import { getExhibitions } from '@/app/actions/exhibitions'
 import { getOrders } from '@/app/actions/orders'
 import { Users, Image as ImageIcon, GalleryThumbnails, ShoppingBag } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminDashboardPage() {
   const [artistsResult, artworksResult, exhibitionsResult, ordersResult] = await Promise.all([
     getArtists(),
@@ -40,7 +42,7 @@ export default async function AdminDashboardPage() {
       name: 'Exhibitions',
       value: exhibitions.length,
       subtext: `${liveExhibitions} live`,
-      icon: Gallery,
+      icon: GalleryThumbnails,
       color: 'bg-purple-500',
     },
     {

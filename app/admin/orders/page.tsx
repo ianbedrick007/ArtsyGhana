@@ -1,6 +1,8 @@
 import { getOrders } from '@/app/actions/orders'
 import { OrdersTable } from '@/components/admin/orders-table'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminOrdersPage() {
   const ordersResult = await getOrders()
   const orders = ordersResult.success ? ordersResult.data : []
