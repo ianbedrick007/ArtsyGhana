@@ -2,7 +2,7 @@ import { getArtists } from '@/app/actions/artists'
 import { getArtworks } from '@/app/actions/artworks'
 import { getExhibitions } from '@/app/actions/exhibitions'
 import { getOrders } from '@/app/actions/orders'
-import { Users, Image as ImageIcon, Gallery, ShoppingBag } from 'lucide-react'
+import { Users, Image as ImageIcon, GalleryThumbnails, ShoppingBag } from 'lucide-react'
 
 export default async function AdminDashboardPage() {
   const [artistsResult, artworksResult, exhibitionsResult, ordersResult] = await Promise.all([

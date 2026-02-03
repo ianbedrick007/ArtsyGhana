@@ -7,7 +7,7 @@ import {
   LayoutDashboard, 
   Users, 
   Image as ImageIcon, 
-  Gallery, 
+  GalleryThumbnails, 
   ShoppingBag,
   LogOut 
 } from 'lucide-react'
