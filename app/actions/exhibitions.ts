@@ -1,9 +1,10 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { prisma } from '@/lib/prisma'
+// import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth-helpers'
 import { exhibitionSchema, exhibitionRoomSchema, hotspotSchema } from '@/lib/validations'
+import { mockExhibition } from '@/lib/mock-data'
 
 export async function createExhibition(data: unknown) {
   try {
@@ -74,23 +75,14 @@ export async function deleteExhibition(id: string) {
 
 export async function getExhibitions(status?: 'UPCOMING' | 'LIVE' | 'ENDED') {
   try {
-    const exhibitions = await prisma.exhibition.findMany({
-      where: status ? { status } : undefined,
-      include: {
-        rooms: {
-          include: {
-            _count: {
-              select: { hotspots: true },
-            },
-          },
-        },
-      },
-      orderBy: [
-        { status: 'asc' },
-        { startDate: 'desc' },
-      ],
-    })
+    // TODO: Replace with actual Prisma query once database is set up
+    let exhibitions = [mockExhibition]
 
+    if (status) {
+      exhibitions = exhibitions.filter((e) => e.status === status)
+    }
+
+    console.log('[v0] Fetched exhibitions:', exhibitions.length)
     return { success: true, data: exhibitions }
   } catch (error) {
     console.error('[v0] Error fetching exhibitions:', error)
@@ -191,35 +183,10 @@ export async function deleteHotspot(id: string) {
 
 export async function getCurrentExhibition() {
   try {
-    const exhibition = await prisma.exhibition.findFirst({
-      where: { status: 'LIVE' },
-      include: {
-        rooms: {
-          include: {
-            hotspots: {
-              include: {
-                artwork: {
-                  include: {
-                    artist: {
-                      select: {
-                        name: true,
-                        slug: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          orderBy: { order: 'asc' },
-        },
-      },
-    })
+    // TODO: Replace with actual Prisma query once database is set up
+    const exhibition = mockExhibition
 
-    if (!exhibition) {
-      return { success: false, error: 'No live exhibition' }
-    }
-
+    console.log('[v0] Fetched current exhibition:', exhibition.title)
     return { success: true, data: exhibition }
   } catch (error) {
     console.error('[v0] Error fetching current exhibition:', error)

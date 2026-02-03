@@ -1,9 +1,10 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { prisma } from '@/lib/prisma'
+// import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth-helpers'
 import { artworkSchema } from '@/lib/validations'
+import { mockArtworks } from '@/lib/mock-data'
 
 export async function createArtwork(data: unknown) {
   try {
@@ -83,26 +84,22 @@ export async function getArtworks(filters?: {
   isAvailable?: boolean
 }) {
   try {
-    const artworks = await prisma.artwork.findMany({
-      where: {
-        ...filters,
-        isAvailable: filters?.isAvailable !== false,
-      },
-      include: {
-        artist: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-          },
-        },
-      },
-      orderBy: [
-        { isFeatured: 'desc' },
-        { createdAt: 'desc' },
-      ],
+    // TODO: Replace with actual Prisma query once database is set up
+    let artworks = mockArtworks.filter((artwork) => {
+      if (filters?.category && artwork.category !== filters.category) return false
+      if (filters?.artistId && artwork.artistId !== filters.artistId) return false
+      if (filters?.isFeatured !== undefined && artwork.isFeatured !== filters.isFeatured) return false
+      if (filters?.isAvailable === false || artwork.isAvailable) return true
+      return false
     })
 
+    // Sort by featured first, then by date
+    artworks = artworks.sort((a, b) => {
+      if (a.isFeatured !== b.isFeatured) return a.isFeatured ? -1 : 1
+      return b.createdAt.getTime() - a.createdAt.getTime()
+    })
+
+    console.log('[v0] Fetched artworks:', artworks.length)
     return { success: true, data: artworks }
   } catch (error) {
     console.error('[v0] Error fetching artworks:', error)
@@ -139,23 +136,12 @@ export async function getArtworkBySlug(slug: string) {
 
 export async function getFeaturedArtworks(limit = 6) {
   try {
-    const artworks = await prisma.artwork.findMany({
-      where: {
-        isFeatured: true,
-        isAvailable: true,
-      },
-      include: {
-        artist: {
-          select: {
-            name: true,
-            slug: true,
-          },
-        },
-      },
-      take: limit,
-      orderBy: { createdAt: 'desc' },
-    })
+    // TODO: Replace with actual Prisma query once database is set up
+    const artworks = mockArtworks
+      .filter((artwork) => artwork.isFeatured && artwork.isAvailable)
+      .slice(0, limit)
 
+    console.log('[v0] Fetched featured artworks:', artworks.length)
     return { success: true, data: artworks }
   } catch (error) {
     console.error('[v0] Error fetching featured artworks:', error)
