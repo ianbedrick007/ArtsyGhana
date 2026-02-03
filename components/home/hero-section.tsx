@@ -117,16 +117,16 @@ export function HeroSection() {
 
     if (showExhibition) {
         return (
-            <div className="relative h-screen w-full bg-luxury-cream">
+            <div className="relative h-screen w-full bg-dark-white">
                 <button
                     onClick={() => setShowExhibition(false)}
-                    className="absolute top-8 left-8 z-[100] border border-luxury-black px-6 py-2 text-[10px] uppercase tracking-widest hover:bg-luxury-black hover:text-white transition-all duration-500 glass"
+                    className="absolute top-8 left-8 z-[100] border border-charcoal px-6 py-2 text-[10px] uppercase tracking-widest hover:bg-charcoal hover:text-white transition-all duration-500 glass"
                 >
                     ← Exit Exhibition
                 </button>
                 <Suspense fallback={
-                    <div className="h-screen w-full flex items-center justify-center bg-luxury-cream">
-                        <div className="text-luxury-gold animate-pulse text-sm uppercase tracking-widest">
+                    <div className="h-screen w-full flex items-center justify-center bg-dark-white">
+                        <div className="text-burnished-gold animate-pulse text-sm uppercase tracking-widest">
                             Initializing virtual gallery...
                         </div>
                     </div>
@@ -138,7 +138,7 @@ export function HeroSection() {
     }
 
     return (
-        <section ref={heroRef} className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+        <section ref={heroRef} className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-dark-white">
             {/* Video Background */}
             <div className="absolute inset-0 w-full h-full">
                 <video
@@ -149,37 +149,41 @@ export function HeroSection() {
                     playsInline
                     preload="auto"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60" />
+            </div>
+
+            {/* Abstract Golden Geometric Shapes */}
+            <div className="absolute inset-0 w-full h-full pointer-events-none">
+                {/* Golden sphere at top */}
+                <div className="absolute top-20 right-1/4 w-32 h-32 bg-burnished-gold/20 rounded-full blur-3xl" />
+                {/* Tall rectangular pillar */}
+                <div className="absolute top-1/4 left-1/3 w-16 h-96 bg-burnished-gold/15 blur-2xl transform -rotate-12" />
+                {/* Smaller rectangular base */}
+                <div className="absolute bottom-1/4 right-1/3 w-48 h-24 bg-burnished-gold/20 blur-2xl transform rotate-6" />
+                {/* Square shape */}
+                <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-burnished-gold/15 blur-xl transform rotate-45" />
+                {/* Octagon-like shape */}
+                <div className="absolute bottom-1/3 left-1/2 w-20 h-20 bg-burnished-gold/20 blur-2xl transform rotate-12" />
+                {/* Curved line */}
+                <div className="absolute top-1/3 right-1/5 w-64 h-2 bg-burnished-gold/15 blur-xl transform rotate-45 rounded-full" />
             </div>
 
             <div className="relative z-10 text-center max-w-5xl px-8">
-                <p className="text-luxury-gold text-xs uppercase tracking-[0.4em] mb-6 font-semibold animate-fade-in drop-shadow-lg">
-                    EST. 2024 • ACCRA, GHANA
-                </p>
-                <h1 className="text-7xl md:text-9xl font-serif text-white mb-8 leading-tight tracking-tighter drop-shadow-2xl">
-                    Where heritage <br />
-                    <span className="italic">meets</span> innovation.
+                <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif text-charcoal mb-4 leading-tight tracking-tight">
+                    Bring Art into Your Space.
                 </h1>
-                <p className="text-white text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed drop-shadow-lg">
-                    A curated digital sanctuary for contemporary Ghanaian art.
-                    Experience the soul of West African creativity through an immersive virtual lens.
-                </p>
-                <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
+                <div className="flex justify-center items-center mt-12">
                     <button
                         onClick={() => setShowExhibition(true)}
-                        className="group relative bg-white/10 backdrop-blur-md border border-white/20 text-white px-12 py-5 text-xs uppercase tracking-[0.25em] overflow-hidden transition-all duration-500 hover:bg-luxury-gold hover:border-luxury-gold"
+                        className="bg-charcoal text-white px-12 py-4 text-sm uppercase tracking-widest font-medium hover:bg-charcoal/90 transition-colors"
                     >
-                        <span className="relative z-10">Enter Exhibition</span>
+                        EXPLORE THE VIRTUAL GALLERY
                     </button>
-                    <a href="/store" className="text-xs uppercase tracking-[0.25em] border-b border-white/60 pb-1 hover:text-luxury-gold hover:border-luxury-gold transition-all duration-300 text-white drop-shadow-lg">
-                        Browse Collections
-                    </a>
                 </div>
             </div>
 
             <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center z-20">
-                <span className="text-[10px] uppercase tracking-widest text-white/80 mb-4 drop-shadow-lg">Scroll to Explore</span>
-                <div className="w-[1px] h-16 bg-gradient-to-b from-white/60 to-transparent animate-pulse" />
+                <div className="w-[1px] h-8 bg-warm-gray mb-2" />
+                <span className="text-[10px] uppercase tracking-widest text-warm-gray">SCROLL</span>
             </div>
         </section>
     )

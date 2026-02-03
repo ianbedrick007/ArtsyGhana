@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
-import { Inter, Outfit } from 'next/font/google'
-import Image from 'next/image'
+import { Inter, Playfair_Display } from 'next/font/google'
 import './globals.css'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { SessionProvider } from '@/components/providers/session-provider'
+import { Navigation } from '@/components/navigation'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' })
+const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -26,25 +26,9 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body className={cn(inter.variable, outfit.variable, "font-sans min-h-screen bg-luxury-cream")}>
+            <body className={cn(inter.variable, playfair.variable, "font-sans min-h-screen bg-dark-white")}>
                 <SessionProvider>
-                    <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-8 py-2 glass">
-                        <a href="/" className="relative h-16 w-48 transition-opacity hover:opacity-80">
-                            <Image
-                                src="/images/ARTSYblack.png"
-                                alt="ArtsyGhana Logo"
-                                fill
-                                className="object-contain object-left"
-                                priority
-                            />
-                        </a>
-                        <div className="flex gap-8 text-sm uppercase tracking-widest font-medium text-luxury-black">
-                            <a href="/" className="hover:text-luxury-gold transition-colors">Gallery</a>
-                            <a href="/store" className="hover:text-luxury-gold transition-colors">Shop</a>
-                            <a href="/blog" className="hover:text-luxury-gold transition-colors">Stories</a>
-                            <a href="/cart" className="hover:text-luxury-gold transition-colors">Cart</a>
-                        </div>
-                    </nav>
+                    <Navigation />
                     <main>{children}</main>
                 </SessionProvider>
             </body>
