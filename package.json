@@ -9,6 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-slot": "^1.2.4",
     "@react-three/drei": "^9.88.16",
     "@react-three/fiber": "^8.15.11",
     "@types/three": "^0.160.0",
