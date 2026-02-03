@@ -1,4 +1,15 @@
 import type { Config } from 'tailwindcss'
+import colors from 'tailwindcss/colors'
+
+// Remove deprecated color names to silence warnings
+const {
+  lightBlue,
+  warmGray,
+  trueGray,
+  coolGray,
+  blueGray,
+  ...validColors
+} = colors as any
 
 const config: Config = {
     content: [
@@ -10,6 +21,9 @@ const config: Config = {
         hoverOnlyWhenSupported: true,
     },
     theme: {
+        colors: {
+            ...validColors,
+        },
         extend: {
             colors: {
                 'luxury-cream': '#F9F7F2',
