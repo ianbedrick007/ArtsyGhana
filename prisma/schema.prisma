@@ -1,0 +1,194 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ArtistStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ArtworkType {
+  ORIGINAL
+  PRINT
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum ExhibitionStatus {
+  UPCOMING
+  LIVE
+  ENDED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders Order[]
+}
+
+model Artist {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  email       String        @unique
+  bio         String        @db.Text
+  image       String?
+  portfolio   String?
+  instagram   String?
+  status      ArtistStatus  @default(PENDING)
+  appliedAt   DateTime      @default(now())
+  approvedAt  DateTime?
+  rejectedAt  DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  artworks Artwork[]
+
+  @@index([status])
+}
+
+model Artwork {
+  id          String       @id @default(cuid())
+  title       String
+  slug        String       @unique
+  description String       @db.Text
+  image       String
+  images      String[]     @default([])
+  price       Float
+  type        ArtworkType  @default(ORIGINAL)
+  dimensions  String?
+  medium      String?
+  year        Int?
+  available   Boolean      @default(true)
+  featured    Boolean      @default(false)
+  artistId    String
+  artist      Artist       @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  orderItems           OrderItem[]
+  exhibitionArtworks   ExhibitionArtwork[]
+
+  @@index([artistId])
+  @@index([featured])
+  @@index([available])
+}
+
+model Exhibition {
+  id          String            @id @default(cuid())
+  title       String
+  slug        String            @unique
+  description String            @db.Text
+  image       String?
+  startDate   DateTime
+  endDate     DateTime
+  status      ExhibitionStatus  @default(UPCOMING)
+  featured    Boolean           @default(false)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  rooms              ExhibitionRoom[]
+  exhibitionArtworks ExhibitionArtwork[]
+
+  @@index([status])
+  @@index([featured])
+}
+
+model ExhibitionRoom {
+  id           String      @id @default(cuid())
+  name         String
+  description  String?     @db.Text
+  order        Int         @default(0)
+  exhibitionId String
+  exhibition   Exhibition  @relation(fields: [exhibitionId], references: [id], onDelete: Cascade)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  exhibitionArtworks ExhibitionArtwork[]
+
+  @@index([exhibitionId])
+}
+
+model ExhibitionArtwork {
+  id               String         @id @default(cuid())
+  exhibitionId     String
+  exhibition       Exhibition     @relation(fields: [exhibitionId], references: [id], onDelete: Cascade)
+  roomId           String?
+  room             ExhibitionRoom? @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  artworkId        String
+  artwork          Artwork        @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+  hotspotPosition  Json?          // {x, y, z} for 3D gallery
+  order            Int            @default(0)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@unique([exhibitionId, artworkId])
+  @@index([exhibitionId])
+  @@index([roomId])
+  @@index([artworkId])
+}
+
+model Order {
+  id              String       @id @default(cuid())
+  orderNumber     String       @unique
+  userId          String?
+  user            User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email           String
+  name            String
+  phone           String?
+  shippingAddress String       @db.Text
+  city            String
+  country         String       @default("Ghana")
+  total           Float
+  status          OrderStatus  @default(PENDING)
+  paystackRef     String?      @unique
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  items OrderItem[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([paystackRef])
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  artworkId String
+  artwork   Artwork  @relation(fields: [artworkId], references: [id], onDelete: Restrict)
+  quantity  Int      @default(1)
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([artworkId])
+}
