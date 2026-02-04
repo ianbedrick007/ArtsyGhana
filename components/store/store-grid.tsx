@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useCart } from '@/store/useCart'
 import { StoreFilters } from './store-filters'
+import { Filter, X } from 'lucide-react'
 
 type Artwork = {
   id: string
@@ -30,6 +31,7 @@ export function StoreGrid({ artworks }: StoreGridProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const [selectedArtist, setSelectedArtist] = useState<string>('all')
   const [maxPrice, setMaxPrice] = useState<number>(2000)
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const { addItem } = useCart()
 
   // Get unique categories and artists from artworks
@@ -59,8 +61,8 @@ export function StoreGrid({ artworks }: StoreGridProps) {
   }, [artworks, selectedCategory, selectedArtist, maxPrice])
 
   return (
-    <div className="flex gap-12 w-full">
-      {/* Sidebar Filters */}
+    <div className="flex gap-6 md:gap-12 w-full">
+      {/* Sidebar Filters - Desktop */}
       <aside className="hidden lg:block flex-shrink-0">
         <StoreFilters
           categories={categories}
@@ -75,34 +77,95 @@ export function StoreGrid({ artworks }: StoreGridProps) {
       </aside>
 
       {/* Main Grid */}
-      <div className="flex-1">
-        <div className="mb-8 text-sm text-warm-gray">
+      <div className="flex-1 w-full">
+        {/* Mobile Filter Button */}
+        <div className="lg:hidden mb-4 flex items-center justify-between">
+          <div className="text-sm text-warm-gray">
+            Showing {filteredArtworks.length} piece{filteredArtworks.length !== 1 ? 's' : ''}
+          </div>
+          <button
+            onClick={() => setMobileFiltersOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 border border-charcoal/20 text-charcoal text-sm uppercase tracking-widest hover:bg-charcoal hover:text-white transition-colors"
+          >
+            <Filter className="w-4 h-4" />
+            Filters
+          </button>
+        </div>
+
+        {/* Desktop Results Count */}
+        <div className="hidden lg:block mb-8 text-sm text-warm-gray">
           Showing {filteredArtworks.length} piece{filteredArtworks.length !== 1 ? 's' : ''}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        {/* Mobile Filter Drawer */}
+        {mobileFiltersOpen && (
+          <div className="lg:hidden fixed inset-0 z-50 bg-black/50" onClick={() => setMobileFiltersOpen(false)}>
+            <div className="absolute right-0 top-0 h-full w-80 bg-white shadow-xl overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              <div className="sticky top-0 bg-white border-b border-charcoal/10 p-4 flex justify-between items-center">
+                <h3 className="text-lg font-serif text-charcoal">Filters</h3>
+                <button
+                  onClick={() => setMobileFiltersOpen(false)}
+                  className="text-charcoal hover:text-burnished-gold transition-colors"
+                  aria-label="Close filters"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="p-4">
+                <StoreFilters
+                  categories={categories}
+                  artists={artists}
+                  selectedCategory={selectedCategory}
+                  selectedArtist={selectedArtist}
+                  maxPrice={maxPrice}
+                  onCategoryChange={(cat) => {
+                    setSelectedCategory(cat)
+                    setMobileFiltersOpen(false)
+                  }}
+                  onArtistChange={(artist) => {
+                    setSelectedArtist(artist)
+                    setMobileFiltersOpen(false)
+                  }}
+                  onPriceChange={setMaxPrice}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
         {filteredArtworks.map((artwork) => (
           <div key={artwork.id} className="group flex flex-col">
             <Link
               href={`/store/${artwork.slug}`}
               className="relative aspect-[4/5] overflow-hidden bg-dark-white mb-4 cursor-pointer"
             >
-              <Image
-                src={artwork.imageUrl}
-                alt={artwork.title}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
+              {artwork.imageUrl ? (
+                <Image
+                  src={artwork.imageUrl}
+                  alt={artwork.title}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none'
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-burnished-gold/20 to-dark-white">
+                  <span className="text-4xl font-serif text-charcoal/20">{artwork.title.charAt(0)}</span>
+                </div>
+              )}
             </Link>
 
             <div className="space-y-2">
               <Link href={`/store/${artwork.slug}`}>
-                <h3 className="text-lg font-serif text-charcoal mb-1 group-hover:text-burnished-gold transition-colors">
+                <h3 className="text-base sm:text-lg font-serif text-charcoal mb-1 group-hover:text-burnished-gold transition-colors">
                   {artwork.title}
                 </h3>
               </Link>
-              <div className="flex items-center justify-between">
-                <div>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div className="flex-1">
                   <Link href={`/artists/${artwork.artist.slug}`}>
                     <p className="text-xs text-warm-gray uppercase tracking-widest mb-1 hover:text-burnished-gold transition-colors">
                       By {artwork.artist.name}
@@ -115,8 +178,8 @@ export function StoreGrid({ artworks }: StoreGridProps) {
                     <p className="text-xs text-warm-gray">{artwork.dimensions}</p>
                   )}
                 </div>
-                <div className="text-right">
-                  <div className="text-sm font-medium text-charcoal mb-2">
+                <div className="flex items-center justify-between sm:flex-col sm:items-end sm:justify-start gap-2">
+                  <div className="text-sm font-medium text-charcoal">
                     ${artwork.price.toLocaleString()}
                   </div>
                   <button
@@ -130,7 +193,7 @@ export function StoreGrid({ artworks }: StoreGridProps) {
                         image: artwork.imageUrl
                       })
                     }}
-                    className="bg-charcoal text-white px-4 py-2 text-xs uppercase tracking-widest hover:bg-burnished-gold transition-colors"
+                    className="bg-charcoal text-white px-4 py-2 text-xs uppercase tracking-widest hover:bg-burnished-gold transition-colors min-w-[80px]"
                   >
                     Add
                   </button>
@@ -139,13 +202,13 @@ export function StoreGrid({ artworks }: StoreGridProps) {
             </div>
           </div>
         ))}
-      </div>
 
         {filteredArtworks.length === 0 && (
-          <div className="text-center py-24 text-warm-gray">
+          <div className="text-center py-12 sm:py-16 md:py-24 text-warm-gray col-span-full">
             No artworks found matching your filters.
           </div>
         )}
+        </div>
       </div>
     </div>
   )

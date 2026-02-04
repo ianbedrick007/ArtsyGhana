@@ -151,8 +151,8 @@ export function HeroSection() {
                 />
             </div>
 
-            {/* Abstract Golden Geometric Shapes */}
-            <div className="absolute inset-0 w-full h-full pointer-events-none">
+            {/* Abstract Golden Geometric Shapes - Hidden on mobile for performance */}
+            <div className="hidden md:block absolute inset-0 w-full h-full pointer-events-none">
                 {/* Golden sphere at top */}
                 <div className="absolute top-20 right-1/4 w-32 h-32 bg-burnished-gold/20 rounded-full blur-3xl" />
                 {/* Tall rectangular pillar */}
@@ -167,22 +167,22 @@ export function HeroSection() {
                 <div className="absolute top-1/3 right-1/5 w-64 h-2 bg-burnished-gold/15 blur-xl transform rotate-45 rounded-full" />
             </div>
 
-            <div className="relative z-10 text-center max-w-5xl px-8">
-                <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif text-charcoal mb-4 leading-tight tracking-tight">
+            <div className="relative z-10 text-center max-w-5xl px-4 sm:px-6 md:px-8">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl xl:text-9xl font-serif text-white mb-4 sm:mb-6 leading-tight tracking-tight drop-shadow-2xl">
                     Bring Art into Your Space.
                 </h1>
-                <div className="flex justify-center items-center mt-12">
+                <div className="flex justify-center items-center mt-8 sm:mt-10 md:mt-12">
                     <button
                         onClick={() => setShowExhibition(true)}
-                        className="bg-charcoal text-white px-12 py-4 text-sm uppercase tracking-widest font-medium hover:bg-charcoal/90 transition-colors"
+                        className="bg-charcoal text-white px-6 sm:px-8 md:px-12 py-3 sm:py-4 text-xs sm:text-sm uppercase tracking-widest font-medium hover:bg-charcoal/90 transition-colors"
                     >
                         EXPLORE THE VIRTUAL GALLERY
                     </button>
                 </div>
             </div>
 
-            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center z-20">
-                <div className="w-[1px] h-8 bg-warm-gray mb-2" />
+            <div className="absolute bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center z-20">
+                <div className="w-[1px] h-6 sm:h-8 bg-warm-gray mb-2" />
                 <span className="text-[10px] uppercase tracking-widest text-warm-gray">SCROLL</span>
             </div>
         </section>

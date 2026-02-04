@@ -4,13 +4,13 @@ import { Check } from 'lucide-react'
 
 export function Footer() {
   return (
-    <footer className="bg-charcoal text-white py-16 px-8">
+    <footer className="bg-charcoal text-white py-8 sm:py-12 md:py-16 px-4 sm:px-6 md:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12 mb-8 sm:mb-10 md:mb-12">
           {/* Left Column - Logo and Description */}
           <div className="lg:col-span-1">
-            <div className="mb-6">
-              <Link href="/" className="relative inline-block h-12 w-48">
+            <div className="mb-4 sm:mb-6">
+              <Link href="/" className="relative inline-block h-10 w-36 sm:h-12 sm:w-48">
                 <Image
                   src="/images/ARTSYblack.png"
                   alt="ArtsyGhana Logo"
@@ -19,16 +19,16 @@ export function Footer() {
                 />
               </Link>
             </div>
-            <p className="text-sm text-warm-gray mb-6 leading-relaxed">
+            <p className="text-xs sm:text-sm text-warm-gray mb-4 sm:mb-6 leading-relaxed">
               Connecting Ghana's finest contemporary artists with collectors worldwide through immersive digital experiences.
             </p>
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <div className="flex items-center gap-2 text-xs text-warm-gray">
-                <Check className="w-4 h-4 text-burnished-gold" />
+                <Check className="w-3 h-3 sm:w-4 sm:h-4 text-burnished-gold" />
                 <span>Secure via Paystack</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-warm-gray">
-                <Check className="w-4 h-4 text-burnished-gold" />
+                <Check className="w-3 h-3 sm:w-4 sm:h-4 text-burnished-gold" />
                 <span>Authenticated Art</span>
               </div>
             </div>
@@ -36,8 +36,8 @@ export function Footer() {
 
           {/* Explore Column */}
           <div>
-            <h3 className="text-sm uppercase tracking-widest mb-6 font-medium">EXPLORE</h3>
-            <ul className="space-y-3">
+            <h3 className="text-xs sm:text-sm uppercase tracking-widest mb-4 sm:mb-6 font-medium">EXPLORE</h3>
+            <ul className="space-y-2 sm:space-y-3">
               <li>
                 <Link href="/gallery" className="text-sm text-warm-gray hover:text-burnished-gold transition-colors">
                   Gallery
@@ -68,8 +68,8 @@ export function Footer() {
 
           {/* Support Column */}
           <div>
-            <h3 className="text-sm uppercase tracking-widest mb-6 font-medium">SUPPORT</h3>
-            <ul className="space-y-3">
+            <h3 className="text-xs sm:text-sm uppercase tracking-widest mb-4 sm:mb-6 font-medium">SUPPORT</h3>
+            <ul className="space-y-2 sm:space-y-3">
               <li>
                 <Link href="/faq" className="text-sm text-warm-gray hover:text-burnished-gold transition-colors">
                   FAQ
@@ -100,33 +100,33 @@ export function Footer() {
 
           {/* Stay Connected Column */}
           <div>
-            <h3 className="text-sm uppercase tracking-widest mb-6 font-medium">STAY CONNECTED</h3>
-            <p className="text-sm text-warm-gray mb-4 leading-relaxed">
+            <h3 className="text-xs sm:text-sm uppercase tracking-widest mb-4 sm:mb-6 font-medium">STAY CONNECTED</h3>
+            <p className="text-xs sm:text-sm text-warm-gray mb-3 sm:mb-4 leading-relaxed">
               Subscribe to receive updates on new arrivals and artist features.
             </p>
-            <form className="mb-6">
+            <form className="mb-4 sm:mb-6">
               <div className="flex gap-2">
                 <input
                   type="email"
                   placeholder="Your email"
-                  className="flex-1 bg-charcoal border border-warm-gray/30 px-4 py-2 text-sm text-white placeholder-warm-gray focus:outline-none focus:border-burnished-gold"
+                  className="flex-1 bg-charcoal border border-warm-gray/30 px-3 sm:px-4 py-2 text-xs sm:text-sm text-white placeholder-warm-gray focus:outline-none focus:border-burnished-gold"
                 />
                 <button
                   type="submit"
-                  className="bg-burnished-gold text-white px-4 py-2 text-sm uppercase tracking-widest hover:bg-burnished-gold/90 transition-colors"
+                  className="bg-burnished-gold text-white px-3 sm:px-4 py-2 text-xs sm:text-sm uppercase tracking-widest hover:bg-burnished-gold/90 transition-colors"
                 >
                   E
                 </button>
               </div>
             </form>
-            <div className="flex gap-4">
-              <a href="#" className="w-8 h-8 bg-warm-gray/20 flex items-center justify-center hover:bg-burnished-gold transition-colors">
+            <div className="flex gap-3 sm:gap-4">
+              <a href="#" className="w-7 h-7 sm:w-8 sm:h-8 bg-warm-gray/20 flex items-center justify-center hover:bg-burnished-gold transition-colors">
                 <span className="text-xs">f</span>
               </a>
-              <a href="#" className="w-8 h-8 bg-warm-gray/20 flex items-center justify-center hover:bg-burnished-gold transition-colors">
+              <a href="#" className="w-7 h-7 sm:w-8 sm:h-8 bg-warm-gray/20 flex items-center justify-center hover:bg-burnished-gold transition-colors">
                 <span className="text-xs">t</span>
               </a>
-              <a href="#" className="w-8 h-8 bg-warm-gray/20 flex items-center justify-center hover:bg-burnished-gold transition-colors">
+              <a href="#" className="w-7 h-7 sm:w-8 sm:h-8 bg-warm-gray/20 flex items-center justify-center hover:bg-burnished-gold transition-colors">
                 <span className="text-xs">i</span>
               </a>
             </div>
@@ -134,14 +134,14 @@ export function Footer() {
         </div>
 
         {/* Bottom Copyright */}
-        <div className="border-t border-warm-gray/20 pt-8 flex justify-between items-center">
+        <div className="border-t border-warm-gray/20 pt-6 sm:pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-burnished-gold rounded-sm flex items-center justify-center">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-burnished-gold rounded-sm flex items-center justify-center">
               <span className="text-xs font-serif text-charcoal">A</span>
             </div>
             <span className="text-xs text-warm-gray">ArtsyGhana</span>
           </div>
-          <div className="text-xs text-warm-gray">
+          <div className="text-xs text-warm-gray text-center sm:text-right">
             © 2023 ArtsyGhana. All rights reserved.
           </div>
         </div>

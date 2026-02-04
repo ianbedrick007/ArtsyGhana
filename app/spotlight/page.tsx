@@ -33,18 +33,18 @@ const spotlightArticles = [
 
 export default function SpotlightPage() {
   return (
-    <div className="min-h-screen bg-dark-white pt-24 pb-24">
-      <div className="max-w-7xl mx-auto px-8">
+    <div className="min-h-screen bg-dark-white pt-16 sm:pt-20 md:pt-24 pb-12 sm:pb-16 md:pb-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-serif text-charcoal mb-4">Artist Spotlight</h1>
-          <p className="text-lg text-warm-gray max-w-2xl mx-auto">
+        <div className="text-center mb-8 sm:mb-12 md:mb-16">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-charcoal mb-3 sm:mb-4">Artist Spotlight</h1>
+          <p className="text-base sm:text-lg text-warm-gray max-w-2xl mx-auto">
             In-depth stories and conversations with Ghana's leading creative voices.
           </p>
         </div>
 
         {/* Articles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
           {spotlightArticles.map((article) => (
             <Link
               key={article.slug}
@@ -60,13 +60,13 @@ export default function SpotlightPage() {
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
               </div>
-              <h2 className="text-2xl font-serif text-charcoal mb-3 group-hover:text-burnished-gold transition-colors">
+              <h2 className="text-xl sm:text-2xl font-serif text-charcoal mb-2 sm:mb-3 group-hover:text-burnished-gold transition-colors">
                 {article.title}
               </h2>
-              <p className="text-warm-gray leading-relaxed mb-4">
+              <p className="text-sm sm:text-base text-warm-gray leading-relaxed mb-3 sm:mb-4">
                 {article.description}
               </p>
-              <div className="flex items-center gap-2 text-sm uppercase tracking-widest text-burnished-gold group-hover:gap-4 transition-all">
+              <div className="flex items-center gap-2 text-xs sm:text-sm uppercase tracking-widest text-burnished-gold group-hover:gap-4 transition-all">
                 <span>Read Story</span>
                 <ArrowRight className="w-4 h-4" />
               </div>

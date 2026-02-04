@@ -29,14 +29,14 @@ export default async function Home() {
       <HeroSection />
 
       {/* Featured Curation Section */}
-      <section id="collections" className="bg-dark-white py-24 px-8">
+      <section id="collections" className="bg-dark-white py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-8 pt-20 sm:pt-24 md:pt-32">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl md:text-6xl font-serif text-charcoal mb-4">Featured Curation</h2>
-            <p className="text-warm-gray text-lg">Exceptional pieces from Ghana's finest contemporary artists.</p>
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-charcoal mb-3 sm:mb-4">Featured Curation</h2>
+            <p className="text-warm-gray text-base sm:text-lg">Exceptional pieces from Ghana's finest contemporary artists.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {featuredProducts.length > 0 ? (
               featuredProducts.map((artwork) => (
                 <ArtCard key={artwork.id} artwork={artwork} />
@@ -52,14 +52,14 @@ export default async function Home() {
 
       {/* Featured Artists Section */}
       {featuredArtists.length > 0 && (
-        <section className="bg-white py-24 px-8">
+        <section className="bg-white py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-8">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-5xl md:text-6xl font-serif text-charcoal mb-4">Meet Our Artists</h2>
-              <p className="text-warm-gray text-lg">Discover the creative minds behind our curated collection.</p>
+            <div className="text-center mb-8 sm:mb-12 md:mb-16">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-charcoal mb-3 sm:mb-4">Meet Our Artists</h2>
+              <p className="text-warm-gray text-base sm:text-lg">Discover the creative minds behind our curated collection.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-12">
               {featuredArtists.map((artist) => (
                 <Link
                   key={artist.id}
@@ -111,14 +111,14 @@ export default async function Home() {
 
       {/* Current Exhibitions Section */}
       {(liveExhibitions.length > 0 || upcomingExhibitions.length > 0) && (
-        <section className="bg-dark-white py-24 px-8">
+        <section className="bg-dark-white py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-8">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-5xl md:text-6xl font-serif text-charcoal mb-4">Current Exhibitions</h2>
-              <p className="text-warm-gray text-lg">Experience art in immersive virtual spaces.</p>
+            <div className="text-center mb-8 sm:mb-12 md:mb-16">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-charcoal mb-3 sm:mb-4">Current Exhibitions</h2>
+              <p className="text-warm-gray text-base sm:text-lg">Experience art in immersive virtual spaces.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
               {liveExhibitions.map((exhibition) => (
                 <Link
                   key={exhibition.id}
@@ -132,6 +132,9 @@ export default async function Home() {
                         alt={exhibition.title}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none'
+                        }}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-burnished-gold/20 to-dark-white">
@@ -142,10 +145,10 @@ export default async function Home() {
                       LIVE
                     </div>
                   </div>
-                  <h3 className="text-2xl font-serif text-charcoal mb-2 group-hover:text-burnished-gold transition-colors">
+                  <h3 className="text-xl sm:text-2xl font-serif text-charcoal mb-2 group-hover:text-burnished-gold transition-colors">
                     {exhibition.title}
                   </h3>
-                  <p className="text-warm-gray line-clamp-2 leading-relaxed">
+                  <p className="text-sm sm:text-base text-warm-gray line-clamp-2 leading-relaxed">
                     {exhibition.description}
                   </p>
                 </Link>
@@ -164,6 +167,9 @@ export default async function Home() {
                         alt={exhibition.title}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none'
+                        }}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-burnished-gold/20 to-dark-white">
@@ -174,10 +180,10 @@ export default async function Home() {
                       COMING SOON
                     </div>
                   </div>
-                  <h3 className="text-2xl font-serif text-charcoal mb-2 group-hover:text-burnished-gold transition-colors">
+                  <h3 className="text-xl sm:text-2xl font-serif text-charcoal mb-2 group-hover:text-burnished-gold transition-colors">
                     {exhibition.title}
                   </h3>
-                  <p className="text-warm-gray line-clamp-2 leading-relaxed">
+                  <p className="text-sm sm:text-base text-warm-gray line-clamp-2 leading-relaxed">
                     {exhibition.description}
                   </p>
                 </Link>
@@ -198,75 +204,75 @@ export default async function Home() {
       )}
 
       {/* Stats Section */}
-      <section className="bg-charcoal text-white py-24 px-8">
+      <section className="bg-charcoal text-white py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 md:gap-12 text-center">
             <div>
-              <Users className="w-12 h-12 mx-auto mb-4 text-burnished-gold" />
-              <div className="text-4xl md:text-5xl font-serif mb-2">50+</div>
-              <div className="text-sm uppercase tracking-widest text-warm-gray">Active Artists</div>
+              <Users className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 mx-auto mb-3 sm:mb-4 text-burnished-gold" />
+              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif mb-1 sm:mb-2">50+</div>
+              <div className="text-xs sm:text-sm uppercase tracking-widest text-warm-gray">Active Artists</div>
             </div>
             <div>
-              <Palette className="w-12 h-12 mx-auto mb-4 text-burnished-gold" />
-              <div className="text-4xl md:text-5xl font-serif mb-2">500+</div>
-              <div className="text-sm uppercase tracking-widest text-warm-gray">Artworks Curated</div>
+              <Palette className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 mx-auto mb-3 sm:mb-4 text-burnished-gold" />
+              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif mb-1 sm:mb-2">500+</div>
+              <div className="text-xs sm:text-sm uppercase tracking-widest text-warm-gray">Artworks Curated</div>
             </div>
             <div>
-              <Award className="w-12 h-12 mx-auto mb-4 text-burnished-gold" />
-              <div className="text-4xl md:text-5xl font-serif mb-2">25+</div>
-              <div className="text-sm uppercase tracking-widest text-warm-gray">Exhibitions</div>
+              <Award className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 mx-auto mb-3 sm:mb-4 text-burnished-gold" />
+              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif mb-1 sm:mb-2">25+</div>
+              <div className="text-xs sm:text-sm uppercase tracking-widest text-warm-gray">Exhibitions</div>
             </div>
             <div>
-              <Star className="w-12 h-12 mx-auto mb-4 text-burnished-gold" />
-              <div className="text-4xl md:text-5xl font-serif mb-2">4.9</div>
-              <div className="text-sm uppercase tracking-widest text-warm-gray">Average Rating</div>
+              <Star className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 mx-auto mb-3 sm:mb-4 text-burnished-gold" />
+              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif mb-1 sm:mb-2">4.9</div>
+              <div className="text-xs sm:text-sm uppercase tracking-widest text-warm-gray">Average Rating</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="bg-white py-24 px-8">
+      <section className="bg-white py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl md:text-6xl font-serif text-charcoal mb-4">What Collectors Say</h2>
-            <p className="text-warm-gray text-lg">Hear from our community of art enthusiasts.</p>
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-charcoal mb-3 sm:mb-4">What Collectors Say</h2>
+            <p className="text-warm-gray text-base sm:text-lg">Hear from our community of art enthusiasts.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-dark-white p-8 rounded-lg">
-              <div className="flex gap-1 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <div className="bg-dark-white p-6 sm:p-8 rounded-lg">
+              <div className="flex gap-1 mb-3 sm:mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-burnished-gold text-burnished-gold" />
+                  <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 fill-burnished-gold text-burnished-gold" />
                 ))}
               </div>
-              <p className="text-warm-gray mb-6 leading-relaxed italic">
+              <p className="text-sm sm:text-base text-warm-gray mb-4 sm:mb-6 leading-relaxed italic">
                 "ArtsyGhana has transformed how I discover and collect contemporary African art. The virtual exhibitions are breathtaking, and the authentication process gives me complete confidence in my purchases."
               </p>
               <div className="font-serif text-charcoal">Sarah Johnson</div>
               <div className="text-sm text-warm-gray">Collector, New York</div>
             </div>
 
-            <div className="bg-dark-white p-8 rounded-lg">
-              <div className="flex gap-1 mb-4">
+            <div className="bg-dark-white p-6 sm:p-8 rounded-lg">
+              <div className="flex gap-1 mb-3 sm:mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-burnished-gold text-burnished-gold" />
+                  <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 fill-burnished-gold text-burnished-gold" />
                 ))}
               </div>
-              <p className="text-warm-gray mb-6 leading-relaxed italic">
+              <p className="text-sm sm:text-base text-warm-gray mb-4 sm:mb-6 leading-relaxed italic">
                 "As someone new to collecting art, ArtsyGhana made the process accessible and enjoyable. The artist stories and detailed descriptions help me understand each piece's cultural significance."
               </p>
               <div className="font-serif text-charcoal">Michael Chen</div>
               <div className="text-sm text-warm-gray">First-time Collector, London</div>
             </div>
 
-            <div className="bg-dark-white p-8 rounded-lg">
-              <div className="flex gap-1 mb-4">
+            <div className="bg-dark-white p-6 sm:p-8 rounded-lg">
+              <div className="flex gap-1 mb-3 sm:mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-burnished-gold text-burnished-gold" />
+                  <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 fill-burnished-gold text-burnished-gold" />
                 ))}
               </div>
-              <p className="text-warm-gray mb-6 leading-relaxed italic">
+              <p className="text-sm sm:text-base text-warm-gray mb-4 sm:mb-6 leading-relaxed italic">
                 "The quality of artwork and the seamless purchasing experience exceeded my expectations. I've built an impressive collection of Ghanaian contemporary art thanks to ArtsyGhana."
               </p>
               <div className="font-serif text-charcoal">Amina Okafor</div>
@@ -277,50 +283,50 @@ export default async function Home() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="bg-[#8D6B3B] text-white py-24 px-8">
+      <section className="bg-[#8D6B3B] text-white py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-serif mb-4">Stay Connected</h2>
-          <p className="text-warm-gray text-lg mb-8 max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif mb-3 sm:mb-4">Stay Connected</h2>
+          <p className="text-warm-gray text-base sm:text-lg mb-6 sm:mb-8 max-w-2xl mx-auto">
             Subscribe to receive exclusive updates on new arrivals, artist features, and upcoming exhibitions.
           </p>
-          <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+          <form className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto">
             <input
               type="email"
               placeholder="Your email address"
-              className="flex-1 bg-white/10 border border-white/30 px-6 py-4 text-white placeholder-warm-gray focus:outline-none focus:border-burnished-gold transition-colors"
+              className="flex-1 bg-white/10 border border-white/30 px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base text-white placeholder-warm-gray focus:outline-none focus:border-burnished-gold transition-colors"
             />
             <button
               type="submit"
-              className="bg-burnished-gold text-white px-8 py-4 text-sm uppercase tracking-widest hover:bg-burnished-gold/90 transition-colors"
+              className="bg-burnished-gold text-white px-6 sm:px-8 py-3 sm:py-4 text-xs sm:text-sm uppercase tracking-widest hover:bg-burnished-gold/90 transition-colors"
             >
               Subscribe
             </button>
           </form>
-          <p className="text-xs text-warm-gray mt-4">
+          <p className="text-xs text-warm-gray mt-3 sm:mt-4">
             We respect your privacy. Unsubscribe at any time.
           </p>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="bg-dark-white py-24 px-8">
+      <section className="bg-dark-white py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-serif text-charcoal mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-charcoal mb-4 sm:mb-6">
             Ready to Start Your Collection?
           </h2>
-          <p className="text-warm-gray text-lg mb-8 max-w-2xl mx-auto">
+          <p className="text-warm-gray text-base sm:text-lg mb-6 sm:mb-8 max-w-2xl mx-auto">
             Explore our curated gallery and discover authentic contemporary Ghanaian art that speaks to you.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <Link
               href="/store"
-              className="bg-charcoal text-white px-12 py-4 text-sm uppercase tracking-widest hover:bg-charcoal/90 transition-colors inline-block"
+              className="bg-charcoal text-white px-8 sm:px-12 py-3 sm:py-4 text-xs sm:text-sm uppercase tracking-widest hover:bg-charcoal/90 transition-colors inline-block text-center"
             >
               Browse Collection
             </Link>
             <Link
               href="/gallery"
-              className="bg-white border-2 border-charcoal text-charcoal px-12 py-4 text-sm uppercase tracking-widest hover:bg-charcoal hover:text-white transition-colors inline-block"
+              className="bg-white border-2 border-charcoal text-charcoal px-8 sm:px-12 py-3 sm:py-4 text-xs sm:text-sm uppercase tracking-widest hover:bg-charcoal hover:text-white transition-colors inline-block text-center"
             >
               View Gallery
             </Link>

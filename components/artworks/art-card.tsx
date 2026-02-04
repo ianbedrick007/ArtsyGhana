@@ -24,12 +24,21 @@ export function ArtCard({ artwork }: ArtCardProps) {
   return (
     <div className="group">
       <Link href={`/store/${artwork.slug}`} className="relative aspect-[4/5] overflow-hidden mb-6 bg-dark-white block">
-        <Image
-          src={artwork.imageUrl}
-          alt={artwork.title}
-          fill
-          className="object-cover transition-transform duration-1000 group-hover:scale-110"
-        />
+        {artwork.imageUrl ? (
+          <Image
+            src={artwork.imageUrl}
+            alt={artwork.title}
+            fill
+            className="object-cover transition-transform duration-1000 group-hover:scale-110"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none'
+            }}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-burnished-gold/20 to-dark-white">
+            <span className="text-4xl font-serif text-charcoal/20">{artwork.title.charAt(0)}</span>
+          </div>
+        )}
         <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/20 transition-colors duration-500 flex items-center justify-center">
           <button
             onClick={(e) => {

@@ -11,31 +11,40 @@ export default async function GalleryPage() {
   const featuredArtworks = artworks.slice(0, 9)
 
   return (
-    <div className="min-h-screen bg-dark-white pt-24 pb-24">
-      <div className="max-w-7xl mx-auto px-8">
+    <div className="min-h-screen bg-dark-white pt-16 sm:pt-20 pb-12 sm:pb-16 md:pb-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-serif text-charcoal mb-4">Featured Curation</h1>
-          <p className="text-lg text-warm-gray">
+        <div className="text-center mb-8 sm:mb-12 md:mb-16">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-charcoal mb-3 sm:mb-4">Featured Curation</h1>
+          <p className="text-base sm:text-lg text-warm-gray">
             Exceptional pieces from Ghana's finest contemporary artists.
           </p>
         </div>
 
         {/* 3x3 Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {featuredArtworks.map((artwork) => (
             <Link
               key={artwork.id}
               href={`/store/${artwork.slug}`}
               className="group relative aspect-[4/5] overflow-hidden bg-dark-white"
             >
-              <Image
-                src={artwork.imageUrl}
-                alt={artwork.title}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
+              {artwork.imageUrl ? (
+                <Image
+                  src={artwork.imageUrl}
+                  alt={artwork.title}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none'
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-burnished-gold/20 to-dark-white">
+                  <span className="text-4xl font-serif text-charcoal/20">{artwork.title.charAt(0)}</span>
+                </div>
+              )}
             </Link>
           ))}
         </div>
