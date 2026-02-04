@@ -5,6 +5,7 @@ import { getArtists } from '@/app/actions/artists'
 import { HeroSection } from '@/components/home/hero-section'
 import { ArtCard } from '@/components/artworks/art-card'
 import { Footer } from '@/components/footer'
+import { ExhibitionImage } from '@/components/exhibition-image'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, Star, Users, Palette, Award } from 'lucide-react'
@@ -127,14 +128,9 @@ export default async function Home() {
                 >
                   <div className="relative aspect-[16/9] overflow-hidden bg-light-grey mb-6 rounded-lg">
                     {exhibition.image ? (
-                      <Image
+                      <ExhibitionImage
                         src={exhibition.image}
                         alt={exhibition.title}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none'
-                        }}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-burnished-gold/20 to-dark-white">
@@ -162,14 +158,9 @@ export default async function Home() {
                 >
                   <div className="relative aspect-[16/9] overflow-hidden bg-light-grey mb-6 rounded-lg">
                     {exhibition.image ? (
-                      <Image
+                      <ExhibitionImage
                         src={exhibition.image}
                         alt={exhibition.title}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none'
-                        }}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-burnished-gold/20 to-dark-white">

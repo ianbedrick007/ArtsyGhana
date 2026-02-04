@@ -1,6 +1,6 @@
 import { getArtworks } from '@/app/actions/artworks'
 import { Footer } from '@/components/footer'
-import Image from 'next/image'
+import { ArtworkImage } from '@/components/artwork-image'
 import Link from 'next/link'
 
 export default async function GalleryPage() {
@@ -30,15 +30,10 @@ export default async function GalleryPage() {
               className="group relative aspect-[4/5] overflow-hidden bg-dark-white"
             >
               {artwork.imageUrl ? (
-                <Image
+                <ArtworkImage
                   src={artwork.imageUrl}
                   alt={artwork.title}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none'
-                  }}
+                  title={artwork.title}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-burnished-gold/20 to-dark-white">
