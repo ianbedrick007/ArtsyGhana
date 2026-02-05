@@ -9,12 +9,47 @@ export function HeroSection() {
     const heroRef = useRef<HTMLDivElement>(null)
     const [scrollProgress, setScrollProgress] = useState(0)
     const [animationComplete, setAnimationComplete] = useState(false)
+    const [videoLoaded, setVideoLoaded] = useState(false)
     const scrollAccumulator = useRef(0)
+
+    // Initialize video on load - critical for mobile
+    useEffect(() => {
+        const video = videoRef.current
+        if (!video) return
+
+        const handleLoadedMetadata = () => {
+            setVideoLoaded(true)
+            // Try to play and immediately pause to enable scrubbing on mobile
+            video.play().then(() => {
+                video.pause()
+                video.currentTime = 0
+            }).catch(err => {
+                console.log('Video autoplay prevented:', err)
+                // On mobile, we might need user interaction first
+                setVideoLoaded(true)
+            })
+        }
+
+        const handleCanPlay = () => {
+            setVideoLoaded(true)
+        }
+
+        video.addEventListener('loadedmetadata', handleLoadedMetadata)
+        video.addEventListener('canplay', handleCanPlay)
+
+        // Force load
+        video.load()
+
+        return () => {
+            video.removeEventListener('loadedmetadata', handleLoadedMetadata)
+            video.removeEventListener('canplay', handleCanPlay)
+        }
+    }, [])
 
     // Scroll-controlled video scrubbing with page lock AND smooth interpolation
     useEffect(() => {
         const video = videoRef.current
-        if (!video) return
+        if (!video || !videoLoaded) return
 
         const SCROLL_MULTIPLIER = 4
         const LERP_FACTOR = 0.05
@@ -66,14 +101,14 @@ export function HeroSection() {
 
         const handleTouchStart = (e: TouchEvent) => {
             const touch = e.touches[0]
-            ; (video as any).touchStartY = touch.clientY
+                ; (video as any).touchStartY = touch.clientY
         }
 
         const handleTouchMove = (e: TouchEvent) => {
             const touch = e.touches[0]
             const touchStartY = (video as any).touchStartY || touch.clientY
             const deltaY = touchStartY - touch.clientY
-            ; (video as any).touchStartY = touch.clientY
+                ; (video as any).touchStartY = touch.clientY
 
             const maxScroll = window.innerHeight * SCROLL_MULTIPLIER
 
@@ -100,7 +135,7 @@ export function HeroSection() {
             window.removeEventListener('touchstart', handleTouchStart)
             window.removeEventListener('touchmove', handleTouchMove)
         }
-    }, [animationComplete])
+    }, [animationComplete, videoLoaded])
 
     // Lock body scroll until animation completes
     useEffect(() => {
@@ -139,6 +174,15 @@ export function HeroSection() {
 
     return (
         <section ref={heroRef} className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-dark-white">
+            {/* Loading Overlay */}
+            {!videoLoaded && (
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-dark-white">
+                    <div className="text-burnished-gold animate-pulse text-sm uppercase tracking-widest">
+                        Loading experience...
+                    </div>
+                </div>
+            )}
+
             {/* Video Background */}
             <div className="absolute inset-0 w-full h-full">
                 <video
@@ -148,6 +192,8 @@ export function HeroSection() {
                     muted
                     playsInline
                     preload="auto"
+                    webkit-playsinline="true"
+                    x5-playsinline="true"
                 />
             </div>
 
