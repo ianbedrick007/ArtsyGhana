@@ -18,7 +18,7 @@ export default withAuth(
         const isDev = process.env.NODE_ENV === 'development'
         const cspHeader = `
             default-src 'self';
-            script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https: 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ''};
+            script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://checkout.paystack.com https://js.paystack.co https://widget.cloudinary.com https://upload-widget.cloudinary.com;
             style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
             img-src 'self' data: https: blob:;
             font-src 'self' https://fonts.gstatic.com;
