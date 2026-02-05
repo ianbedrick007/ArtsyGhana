@@ -40,6 +40,14 @@ enum ExhibitionStatus {
   ENDED
 }
 
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -171,7 +179,8 @@ model Order {
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
-  items OrderItem[]
+  items   OrderItem[]
+  payment Payment?
 
   @@index([userId])
   @@index([status])
@@ -191,4 +200,23 @@ model OrderItem {
 
   @@index([orderId])
   @@index([artworkId])
+}
+
+model Payment {
+  id                 String        @id @default(cuid())
+  amount             Float
+  currency           String        @default("GHS")
+  status             PaymentStatus @default(PENDING)
+  method             String        @default("paystack")
+  paystackRef        String?       @unique
+  paystackAccessCode String?
+  metadata           Json?
+  orderId            String        @unique
+  order              Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@index([paystackRef])
+  @@index([status])
+  @@index([createdAt])
 }

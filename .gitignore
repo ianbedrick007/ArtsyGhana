@@ -9,6 +9,7 @@ env/
 bin/
 obj/
 vendor/
+scripts/populate_db.py
 
 # Next.js build outputs
 .next/

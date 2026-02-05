@@ -4,7 +4,7 @@ import './globals.css'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { SessionProvider } from '@/components/providers/session-provider'
-import { Navigation } from '@/components/navigation'
+import { ConditionalNav } from '@/components/conditional-nav'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
@@ -28,8 +28,7 @@ export default function RootLayout({
         <html lang="en">
             <body className={cn(inter.variable, playfair.variable, "font-sans min-h-screen bg-dark-white")}>
                 <SessionProvider>
-                    <Navigation />
-                    <main>{children}</main>
+                    <ConditionalNav>{children}</ConditionalNav>
                 </SessionProvider>
             </body>
         </html>
