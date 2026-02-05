@@ -38,8 +38,12 @@ export default withAuth(
         response.headers.set('X-XSS-Protection', '1; mode=block')
         response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
 
-        // Allow access to auth pages without authentication
-        if (path.startsWith('/admin/login') || path.startsWith('/admin/signup')) {
+        // Allow access to auth pages and auth APIs without authentication
+        if (
+            path.startsWith('/admin/login') ||
+            path.startsWith('/admin/signup') ||
+            path.startsWith('/api/admin/auth')
+        ) {
             return response
         }
 
@@ -66,8 +70,12 @@ export default withAuth(
             authorized: ({ token, req }) => {
                 const path = req.nextUrl.pathname
 
-                // Allow auth pages
-                if (path.startsWith('/admin/login') || path.startsWith('/admin/signup')) {
+                // Allow auth pages and auth APIs
+                if (
+                    path.startsWith('/admin/login') ||
+                    path.startsWith('/admin/signup') ||
+                    path.startsWith('/api/admin/auth')
+                ) {
                     return true
                 }
 
