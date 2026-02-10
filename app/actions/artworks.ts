@@ -1,30 +1,34 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-// import { prisma } from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth-helpers'
 import { artworkSchema } from '@/lib/validations'
-import { mockArtworks } from '@/lib/mock-data'
+// import { mockArtworks } from '@/lib/mock-data'
+
+import { slugify } from '@/lib/utils'
 
 export async function createArtwork(data: unknown) {
   try {
     await requireAdmin()
     const validated = artworkSchema.parse(data)
 
+    const slug = `${slugify(validated.title)}-${Date.now()}`
+
     const artwork = await prisma.artwork.create({
       data: {
         title: validated.title,
+        slug,
         description: validated.description,
         price: validated.price,
         artistId: validated.artistId,
         medium: validated.medium,
         dimensions: validated.dimensions,
         year: validated.year,
-        imageUrl: validated.imageUrl,
+        image: validated.imageUrl,
         type: validated.type,
-        category: validated.category,
-        isAvailable: validated.isAvailable,
-        isFeatured: validated.isFeatured,
+        available: validated.isAvailable,
+        featured: validated.isFeatured,
       },
     })
 
@@ -84,19 +88,29 @@ export async function getArtworks(filters?: {
   isAvailable?: boolean
 }) {
   try {
-    // TODO: Replace with actual Prisma query once database is set up
-    let artworks = mockArtworks.filter((artwork) => {
-      if (filters?.category && artwork.category !== filters.category) return false
-      if (filters?.artistId && artwork.artistId !== filters.artistId) return false
-      if (filters?.isFeatured !== undefined && artwork.isFeatured !== filters.isFeatured) return false
-      if (filters?.isAvailable === false || artwork.isAvailable) return true
-      return false
-    })
+    const where: any = {}
+    if (filters?.artistId) where.artistId = filters.artistId
+    if (filters?.isFeatured !== undefined) where.featured = filters.isFeatured
+    if (filters?.isAvailable === false) {
+      // No filter needed as we want all
+    } else if (filters?.isAvailable === true) {
+      where.available = true
+    }
 
-    // Sort by featured first, then by date
-    artworks = artworks.sort((a, b) => {
-      if (a.isFeatured !== b.isFeatured) return a.isFeatured ? -1 : 1
-      return b.createdAt.getTime() - a.createdAt.getTime()
+    const artworks = await prisma.artwork.findMany({
+      where,
+      include: {
+        artist: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+      },
+      orderBy: [
+        { featured: 'desc' },
+        { createdAt: 'desc' },
+      ],
     })
 
     console.log('[v0] Fetched artworks:', artworks.length)
@@ -136,10 +150,22 @@ export async function getArtworkBySlug(slug: string) {
 
 export async function getFeaturedArtworks(limit = 6) {
   try {
-    // TODO: Replace with actual Prisma query once database is set up
-    const artworks = mockArtworks
-      .filter((artwork) => artwork.isFeatured && artwork.isAvailable)
-      .slice(0, limit)
+    const artworks = await prisma.artwork.findMany({
+      where: {
+        featured: true,
+        available: true,
+      },
+      include: {
+        artist: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+      },
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+    })
 
     console.log('[v0] Fetched featured artworks:', artworks.length)
     return { success: true, data: artworks }

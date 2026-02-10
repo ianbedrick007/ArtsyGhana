@@ -70,6 +70,12 @@ export async function POST(request: NextRequest) {
             )
         }
 
+        // Update Order with reference
+        await prisma.order.update({
+            where: { id: orderId },
+            data: { paystackRef: reference },
+        })
+
         // Create or update payment record
         if (existingPayment) {
             await prisma.payment.update({

@@ -11,19 +11,20 @@ export async function createOrder(data: unknown) {
 
     const order = await prisma.order.create({
       data: {
-        customerName: validated.customerName,
-        customerEmail: validated.customerEmail,
-        customerPhone: validated.customerPhone,
+        orderNumber: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        name: validated.customerName,
+        email: validated.customerEmail,
+        phone: validated.customerPhone,
         shippingAddress: validated.shippingAddress,
         city: validated.city,
-        region: validated.region,
-        totalAmount: validated.items.reduce((sum, item) => sum + item.priceAtPurchase * item.quantity, 0),
+        // region: validated.region,
+        total: validated.items.reduce((sum, item) => sum + item.priceAtPurchase * item.quantity, 0),
         status: 'PENDING',
         items: {
           create: validated.items.map(item => ({
             artworkId: item.artworkId,
             quantity: item.quantity,
-            priceAtPurchase: item.priceAtPurchase,
+            price: item.priceAtPurchase,
           })),
         },
       },
@@ -63,7 +64,7 @@ export async function updateOrderStatus(data: unknown) {
       where: { id: validated.orderId },
       data: {
         status: validated.status,
-        trackingNumber: validated.trackingNumber,
+        // trackingNumber: validated.trackingNumber, // Not in schema
       },
     })
 
@@ -90,7 +91,7 @@ export async function getOrders(status?: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 
             artwork: {
               select: {
                 title: true,
-                imageUrl: true,
+                image: true,
                 artist: {
                   select: {
                     name: true,

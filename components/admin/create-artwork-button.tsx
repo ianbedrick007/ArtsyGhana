@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { createArtwork } from '@/app/actions/artworks'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -20,7 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Plus } from 'lucide-react'
+import { Plus, Upload, X } from 'lucide-react'
+import Image from 'next/image'
 
 type Artist = {
   id: string
@@ -30,35 +31,84 @@ type Artist = {
 export function CreateArtworkButton({ artists }: { artists: Artist[] }) {
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0]
+    if (selectedFile) {
+      setFile(selectedFile)
+      const url = URL.createObjectURL(selectedFile)
+      setPreviewUrl(url)
+    }
+  }
+
+  const removeFile = () => {
+    setFile(null)
+    if (previewUrl) URL.revokeObjectURL(previewUrl)
+    setPreviewUrl(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (!file) {
+      alert('Please select an image')
+      return
+    }
+
     setIsSubmitting(true)
 
-    const formData = new FormData(e.currentTarget)
-    const data = {
-      title: formData.get('title') as string,
-      description: formData.get('description') as string,
-      price: parseFloat(formData.get('price') as string),
-      artistId: formData.get('artistId') as string,
-      medium: formData.get('medium') as string,
-      dimensions: formData.get('dimensions') as string,
-      year: parseInt(formData.get('year') as string),
-      imageUrl: formData.get('imageUrl') as string,
-      type: formData.get('type') as 'ORIGINAL' | 'PRINT',
-      category: formData.get('category') as string,
-      isAvailable: true,
-      isFeatured: formData.get('isFeatured') === 'on',
+    try {
+      // 1. Upload Image
+      const uploadFormData = new FormData()
+      uploadFormData.append('file', file)
+
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadFormData,
+      })
+
+      const uploadData = await uploadRes.json()
+
+      if (!uploadRes.ok) {
+        throw new Error(uploadData.error || 'Failed to upload image')
+      }
+
+      const imageUrl = uploadData.url
+
+      // 2. Create Artwork
+      const formData = new FormData(e.currentTarget)
+      const data = {
+        title: formData.get('title') as string,
+        description: formData.get('description') as string,
+        price: parseFloat(formData.get('price') as string),
+        artistId: formData.get('artistId') as string,
+        medium: formData.get('medium') as string,
+        dimensions: formData.get('dimensions') as string,
+        year: parseInt(formData.get('year') as string),
+        imageUrl: imageUrl, // Use the uploaded URL
+        type: formData.get('type') as 'ORIGINAL' | 'PRINT',
+        // category: formData.get('category') as string, // Removed category
+        isAvailable: true,
+        isFeatured: formData.get('isFeatured') === 'on',
+      }
+
+      const result = await createArtwork(data)
+
+      if (result.success) {
+        setOpen(false)
+        window.location.reload()
+      } else {
+        alert('Failed to create artwork: ' + result.error)
+      }
+    } catch (error) {
+      console.error(error)
+      alert('An error occurred. Please try again.')
+    } finally {
+      setIsSubmitting(false)
     }
-
-    const result = await createArtwork(data)
-
-    if (result.success) {
-      setOpen(false)
-      window.location.reload()
-    }
-
-    setIsSubmitting(false)
   }
 
   return (
@@ -152,21 +202,43 @@ export function CreateArtworkButton({ artists }: { artists: Artist[] }) {
             </div>
           </div>
 
+          {/* Image Upload */}
           <div className="space-y-2">
-            <Label htmlFor="category">Category</Label>
-            <Input id="category" name="category" disabled={isSubmitting} />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="imageUrl">Image URL *</Label>
-            <Input
-              id="imageUrl"
-              name="imageUrl"
-              type="url"
-              required
-              placeholder="https://..."
-              disabled={isSubmitting}
-            />
+            <Label>Artwork Image *</Label>
+            <div className="flex items-center gap-4">
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="cursor-pointer border-2 border-dashed border-gray-300 rounded-md p-4 hover:border-gray-400 transition-colors flex flex-col items-center justify-center w-full h-32 bg-gray-50"
+              >
+                {previewUrl ? (
+                  <div className="relative w-full h-full">
+                    <Image src={previewUrl} alt="Preview" fill className="object-contain" />
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        removeFile()
+                      }}
+                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-500">Click to upload image</span>
+                  </>
+                )}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </div>
           </div>
 
           <div className="flex items-center space-x-2">

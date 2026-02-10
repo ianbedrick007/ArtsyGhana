@@ -65,6 +65,7 @@ model Artist {
   name        String
   slug        String        @unique
   email       String        @unique
+  phone       String?
   bio         String        @db.Text
   image       String?
   portfolio   String?

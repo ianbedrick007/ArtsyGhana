@@ -139,18 +139,35 @@ async function handleSuccessfulPayment(data: any) {
             },
         })
 
-        // Create payment record
-        await prisma.payment.create({
-            data: {
-                amount: paidAmount,
-                currency: data.currency || 'GHS',
-                status: 'SUCCESS',
-                method: 'paystack',
-                paystackRef: reference,
-                metadata: data.metadata,
-                orderId: order.id,
-            },
+        // Update payment record
+        const payment = await prisma.payment.findUnique({
+            where: { orderId: order.id },
         })
+
+        if (payment) {
+            await prisma.payment.update({
+                where: { id: payment.id },
+                data: {
+                    status: 'SUCCESS',
+                    paystackRef: reference,
+                    currency: data.currency || 'GHS',
+                    metadata: data.metadata || {},
+                },
+            })
+        } else {
+            // Fallback if payment record wasn't created during initialization (unlikely but safe)
+            await prisma.payment.create({
+                data: {
+                    amount: paidAmount,
+                    currency: data.currency || 'GHS',
+                    status: 'SUCCESS',
+                    method: 'paystack',
+                    paystackRef: reference,
+                    metadata: data.metadata,
+                    orderId: order.id,
+                },
+            })
+        }
 
         console.log(`Payment successful for order ${order.id}`)
 

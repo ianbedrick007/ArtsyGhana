@@ -13,9 +13,9 @@ import {
 
 type Order = {
   id: string
-  customerName: string
-  customerEmail: string
-  totalAmount: number
+  name: string
+  email: string
+  total: number
   status: string
   createdAt: Date
   items: {
@@ -78,8 +78,8 @@ export function OrdersTable({ orders }: { orders: Order[] }) {
           {orders.map((order) => (
             <tr key={order.id}>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-medium text-gray-900">{order.customerName}</div>
-                <div className="text-sm text-gray-500">{order.customerEmail}</div>
+                <div className="text-sm font-medium text-gray-900">{order.name}</div>
+                <div className="text-sm text-gray-500">{order.email}</div>
                 <div className="text-xs text-gray-400">
                   {new Date(order.createdAt).toLocaleDateString()}
                 </div>
@@ -92,7 +92,7 @@ export function OrdersTable({ orders }: { orders: Order[] }) {
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                GHS {order.totalAmount.toLocaleString()}
+                GHS {order.total.toLocaleString()}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
